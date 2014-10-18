@@ -173,22 +173,37 @@ mytasklist.buttons = awful.util.table.join(
                                           end))
 memwidget = wibox.widget.textbox()
 cpuwidget = wibox.widget.textbox()
+volwidget = wibox.widget.textbox()
 mysystrace = wibox.widget.systray()
 
 
-vicious.register(memwidget, vicious.widgets.mem, "$1% ($2MB/$3MB)", 13)
-vicious.register(cpuwidget, vicious.widgets.cpu, "$1%")
+vicious.register(volwidget, vicious.widgets.volume, "$1%", 10, "Master")
+vicious.register(memwidget, vicious.widgets.mem, "mem $1% ", 13) --($2MB/$3MB)
+vicious.register(cpuwidget, vicious.widgets.cpu, "cpu $1%", 10)
+
+batwidget = awful.widget.progressbar()
+batwidget:set_width(8)
+batwidget:set_height(10)
+batwidget:set_vertical(true)
+batwidget:set_background_color("#494B4F")
+batwidget:set_border_color(nil)
+batwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 10 },
+                      stops = { { 0, "#AECF96" }, { 0.5, "#88A175" },
+                         { 1, "#FF5656" }}})
+vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
+
+
 
 -- Initialize widget
-mpdwidget = wibox.widget.textbox()
-vicious.register(mpdwidget, vicious.widgets.mpd,
-    function (mpdwidget, args)
-        if args["{state}"] == "Stop" then
-            return " - "
-        else
-            return args["{Artist}"]..' - '.. args["{Title}"]
-        end
-    end, 10)
+-- mpdwidget = wibox.widget.textbox()
+--vicious.register(mpdwidget, vicious.widgets.mpd,
+--    function (mpdwidget, args)
+--        if args["{state}"] == "Stop" then
+--            return " - "
+--        else
+--            return args["{Artist}"]..' - '.. args["{Title}"]
+--        end
+--    end, 10)
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
@@ -220,8 +235,10 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
 
---    right_layout:add(memwidget)
-    right_layout:add(mpdwidget)
+    right_layout:add(volwidget)
+    right_layout:add(batwidget)
+    right_layout:add(memwidget)
+    --right_layout:add(mpdwidget)
     right_layout:add(cpuwidget)
     right_layout:add(mysystrace)
     right_layout:add(mytextclock)
