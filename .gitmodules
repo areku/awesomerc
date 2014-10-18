@@ -1,0 +1,10 @@
+[submodule "awesompd"]
+	path = awesompd
+	url = git@github.com:alexander-yakushev/awesompd.git
+[submodule "vicious"]
+	path = vicious
+	url = http://git.sysphere.org/vicious
+[submodule "themes"]
+	path = themes
+	url = git@github.com:mikar/awesome-themes.git
+
