@@ -41,9 +41,20 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/usr/share/awesome/themes/sky/theme.lua")
--- beautiful.init("/home/weigl/.config/awesome/themes/blue/theme.lua")
+beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
+-- beautiful.init("/home/weigl/.config/awesome/themes/matrix/theme.lua")
 
+
+local APW = require("apw/widget")
+--{{{ APW
+theme.apw_fg_color = {type = 'linear', from = {0, 0}, to={40,0},
+    stops={{0, "#CC8888"}, {.4, "#88CC88"}, {.8, "#8888CC"}}}
+    theme.apw_bg_color = "#333333"
+    theme.apw_mute_fg_color = "#CC9393"
+    theme.apw_mute_bg_color = "#663333"
+--}}}
+
+beautiful.wallpaper = "/home/weigla/.wallpaper.jpg"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvtc"
@@ -181,17 +192,16 @@ vicious.register(volwidget, vicious.widgets.volume, "$1%", 10, "Master")
 vicious.register(memwidget, vicious.widgets.mem, "mem $1% ", 13) --($2MB/$3MB)
 vicious.register(cpuwidget, vicious.widgets.cpu, "cpu $1%", 10)
 
-batwidget = awful.widget.progressbar()
-batwidget:set_width(8)
-batwidget:set_height(10)
-batwidget:set_vertical(true)
-batwidget:set_background_color("#494B4F")
-batwidget:set_border_color(nil)
-batwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 10 },
-                      stops = { { 0, "#AECF96" }, { 0.5, "#88A175" },
-                         { 1, "#FF5656" }}})
-vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
-
+-- batwidget = awful.widget.progressbar()
+-- batwidget:set_width(8)
+-- batwidget:set_height(10)
+-- batwidget:set_vertical(true)
+-- batwidget:set_background_color("#494B4F")
+-- batwidget:set_border_color(nil)
+-- batwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 10 },
+                      -- stops = { { 0, "#AECF96" }, { 0.5, "#88A175" },
+                         -- { 1, "#FF5656" }}})
+-- vicious.register(batwidget, vicious.widgets.bat, "$2", 61, "BAT0")
 
 
 -- Initialize widget
@@ -235,8 +245,9 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
 
-    right_layout:add(volwidget)
-    right_layout:add(batwidget)
+    -- right_layout:add(volwidget)
+	right_layout:add(APW)
+    -- right_layout:add(batwidget)
     right_layout:add(memwidget)
     --right_layout:add(mpdwidget)
     right_layout:add(cpuwidget)
@@ -325,15 +336,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
 
     -- Volume Control
-    awful.key({ }, "XF86AudioRaiseVolume", function ()
-       awful.util.spawn("amixer set Master 9%+", false) end),
-
-   awful.key({ }, "XF86AudioLowerVolume", function ()
-       awful.util.spawn("amixer set Master 9%-", false) end),
-
-   awful.key({ }, "XF86AudioMute", function ()
-       awful.util.spawn("amixer set Master toggle", false) end)
-
+    awful.key({ }, "XF86AudioRaiseVolume",APW.Up),
+    awful.key({ }, "XF86AudioLowerVolume", APW.Down), 
+    awful.key({ }, "XF86AudioMute", APW.ToggleMute)
 )
 
 clientkeys = awful.util.table.join(
@@ -502,13 +507,16 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
+
 client.connect_signal("focus",
                       function(c)
-                         c.border_color = beautiful.border_focus  end)
+                         c.border_color = "#729fcf"
+					  end)
 
 client.connect_signal("unfocus",
                       function(c)
-                         c.border_color = beautiful.border_normal end)
+                         c.border_color = "#dae3e0"
+					  end)
 -- }}}
 
 -- Autostart {{{
@@ -533,6 +541,6 @@ function run_once(prg, arg_string, pname, screen)
 end
 
 run_once("xscreensaver","-no-splash")
-run_once("pidgin",nil,nil,2)
+-- run_once("pidgin",nil,nil,2)
 run_once("urxvtd -f")
 -- }}}

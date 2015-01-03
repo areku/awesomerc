@@ -8,3 +8,6 @@
 	path = themes
 	url = git@github.com:mikar/awesome-themes.git
 
+[submodule "apw"]
+	path = apw
+	url = https://github.com/seniorivn/apw.git
